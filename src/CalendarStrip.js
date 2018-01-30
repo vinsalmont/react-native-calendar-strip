@@ -71,7 +71,9 @@ export default class CalendarStrip extends Component {
     disabledDateOpacity: PropTypes.number,
     styleWeekend: PropTypes.bool,
 
-    locale: PropTypes.object
+    locale: PropTypes.object,
+
+    numDaysInWeek: PropTypes.number
   };
 
   static defaultProps = {
@@ -89,12 +91,12 @@ export default class CalendarStrip extends Component {
     responsiveSizingOffset: 0,
     innerStyle: { flex: 1 },
     maxDayComponentSize: 80,
-    minDayComponentSize: 10
+    minDayComponentSize: 10,
+    numDaysInWeek: 7,
   };
 
   constructor(props) {
     super(props);
-    this.numDaysInWeek = 7;
 
     if (props.locale) {
       if (props.locale.name && props.locale.config) {
@@ -326,7 +328,7 @@ export default class CalendarStrip extends Component {
     let datesSelectedForWeek = [];
     let datesCustomStylesForWeek = [];
 
-    for (let i = 0; i < this.numDaysInWeek; i++) {
+    for (let i = 0; i < this.props.numDaysInWeek; i++) {
       let date;
       if (props.useIsoWeekday) {
         // isoWeekday starts from Monday
@@ -444,7 +446,7 @@ export default class CalendarStrip extends Component {
   //Function for reseting animations
   resetAnimation() {
     this.animatedValue = [];
-    for (let i = 0; i < this.numDaysInWeek; i++) {
+    for (let i = 0; i < this.props.numDaysInWeek; i++) {
       this.animatedValue.push(new Animated.Value(0));
     }
   }
@@ -454,7 +456,7 @@ export default class CalendarStrip extends Component {
   animate() {
     if (this.props.calendarAnimation) {
       let animations = [];
-      for (let i = 0; i < this.numDaysInWeek; i++) {
+      for (let i = 0; i < this.props.numDaysInWeek; i++) {
         animations.push(
           Animated.timing(this.animatedValue[i], {
             toValue: 1,
@@ -481,7 +483,7 @@ export default class CalendarStrip extends Component {
   // Responsive sizing based on container width.
   onLayout(event) {
     let csWidth = event.nativeEvent.layout.width;
-    let numElements = this.numDaysInWeek;
+    let numElements = this.props.numDaysInWeek;
     if (
       Array.isArray(this.props.leftSelector) &&
       this.props.leftSelector.length > 0
